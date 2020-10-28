@@ -1,0 +1,866 @@
+openapi: 3.0.0
+info:
+  title: ATMS
+  description: |-
+    Attendance Tracking Management System (ATMS) is a part of an HR
+    System, that allows the Admin to track the attendance and leaving of the
+    employees, tracks their availability during the day, and managestheir profiles.
+  contact:
+    name: Ashraf Gehad
+    url: https://github.com/3r3bu5
+    email: deva4rf@gmail.com
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/3r3bu5/ATMS/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:3000
+  description: localhost
+tags:
+- name: dep
+  description: all endpoints related to Departments
+- name: user
+  description: all endpoints related to User
+- name: req
+  description: all endpoints related to Leaving Requests
+paths:
+  /departments:
+    get:
+      tags:
+      - dep
+      summary: Get All Depatments info
+      description: Retrive all departments information (This operation can be performed
+        only by Admins users)
+      operationId: get-departments
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+                x-content-type: application/json
+              examples:
+                example:
+                  value:
+                  - id: "12345"
+                    name: Human Resources
+                    abbr: HR
+                    depHead:
+                      id: "369"
+                      name: Omar Hamed
+                    createdAt: 2019-08-24
+                    updatedAt: 2019-08-24
+                  - id: "4569"
+                    name: Managments
+                    abbr: MG
+                    depHead:
+                      id: "984"
+                      name: Ashraf Gehad
+                    createdAt: 2019-08-24
+                    updatedAt: 2019-08-24
+      x-swagger-router-controller: Dep
+    post:
+      tags:
+      - dep
+      summary: Post a new department
+      description: Post a new department (This operation can be performed only by
+        Admins users)
+      operationId: post-departments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Department'
+            examples:
+              example:
+                value:
+                  id: "1265"
+                  name: Developers
+                  abbr: DEV
+                  depHead: ""
+                  createdAt: 2019-08-24
+                  updatedAt: string
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                example: {}
+                x-content-type: application/json
+              examples:
+                example:
+                  value:
+                    id: "1265"
+                    name: Developers
+                    abbr: DEV
+                    depHead: ""
+                    createdAt: 2019-08-24
+                    updatedAt: string
+      x-swagger-router-controller: Dep
+    delete:
+      tags:
+      - dep
+      summary: '[DANGER] DELETE all departments'
+      description: '[DANGER] DELETE all departments information (This operation can
+        be performed only by Admins users)'
+      operationId: delete-departments
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: Dep
+  /department/{depId}:
+    get:
+      tags:
+      - dep
+      summary: Get a specific department information
+      description: Get a specific department information (This operation can be performed
+        only by Admins users or if the request was made by this department's head
+        )
+      operationId: get-department
+      parameters:
+      - name: depId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+              examples:
+                example:
+                  value:
+                    id: "1234"
+                    name: managments
+                    abbr: MG
+                    depHead:
+                      id: "3645"
+                      name: Ashraf Gehad
+                      age: "30"
+                      position: CEO
+                      department: ""
+                      createdAt: string
+                      updatedAt: string
+                    createdAt: 2019-08-24
+                    updatedAt: string
+      x-swagger-router-controller: Dep
+    put:
+      tags:
+      - dep
+      summary: Edit a specific department information
+      description: Edit a specific department information (This operation can be performed
+        only by Admins users)
+      operationId: put-department
+      parameters:
+      - name: depId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+            examples:
+              example:
+                value:
+                  id: "1234"
+                  name: managments
+                  abbr: MG
+                  depHead:
+                    id: "3645"
+                    name: Ashraf Gehad
+                    age: "30"
+                    position: CEO
+                    department: ""
+                    createdAt: string
+                    updatedAt: string
+                  createdAt: 2019-08-24
+                  updatedAt: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                example: {}
+                x-content-type: application/json
+              examples:
+                example:
+                  value:
+                    id: "1234"
+                    name: managments
+                    abbr: MG
+                    depHead:
+                      id: "3645"
+                      name: Eslam Gehad
+                      age: "30"
+                      position: CEO
+                      department: ""
+                      createdAt: string
+                      updatedAt: string
+                    createdAt: 2019-08-24
+                    updatedAt: string
+      x-swagger-router-controller: Dep
+    delete:
+      tags:
+      - dep
+      summary: DELETE  a specific department information
+      description: DELETE a specific department information (This operation can be
+        performed only by Admins users)
+      operationId: delete-department
+      parameters:
+      - name: depId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: Dep
+  /users:
+    get:
+      tags:
+      - user
+      summary: Get All users information
+      description: 'Retrive all users information (This operation can only performed
+        by Admins users) '
+      operationId: get-users
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+                x-content-type: application/json
+              examples:
+                example:
+                  value:
+                  - id: "123464"
+                    name: Ashraf Ghead
+                    age: "30"
+                    position: CEO
+                    department: ""
+                    avaliable: true
+                    hasLV: true
+                    LVID: string
+                    createdAt: string
+                    updatedAt: string
+                    isAdmin: true
+                  - id: "1264"
+                    name: Omar Hamed
+                    age: "25"
+                    position: sr. developer
+                    department: ""
+                    avaliable: true
+                    hasLV: true
+                    LVID: string
+                    createdAt: string
+                    updatedAt: string
+                    isAdmin: true
+      x-swagger-router-controller: User
+    post:
+      tags:
+      - user
+      summary: 'Post a new user '
+      description: 'Post a new user(This operation can only performed by Admin) '
+      operationId: post-users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            examples:
+              example:
+                value:
+                  name: Ashraf Ghead
+                  age: "30"
+                  position: CEO
+                  department: ""
+                  isAdmin: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                example:
+                  value:
+                    id: "123464"
+                    name: Ashraf Ghead
+                    age: "30"
+                    position: CEO
+                    department: ""
+                    avaliable: true
+                    hasLV: true
+                    LVID: string
+                    createdAt: string
+                    updatedAt: string
+                    isAdmin: true
+      x-swagger-router-controller: User
+    delete:
+      tags:
+      - user
+      summary: '[DANGER] Delete all users'
+      description: 'DELETE all users information (This operation can only performed
+        by Admin) '
+      operationId: delete-users
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: User
+  /users/{userId}:
+    get:
+      tags:
+      - user
+      summary: Retrive a specific user info
+      description: 'Retrive a specific user info (This operation can only performed
+        by Admin) '
+      operationId: get-users-userId
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                example1:
+                  value:
+                    id: string
+                    name: string
+                    age: string
+                    position: string
+                    department: ""
+                    avaliable: true
+                    hasLV: true
+                    LVID: string
+                    createdAt: 2019-10-8
+                    updatedAt: 2019-12-10
+                    isAdmin: true
+      x-swagger-router-controller: User
+    put:
+      tags:
+      - user
+      summary: Edit  a specific user info
+      description: 'Edit a specific user info (This operation can only performed by
+        Admin) '
+      operationId: put-users-userId
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+            examples:
+              example:
+                value:
+                  position: CTO
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                example: {}
+                x-content-type: application/json
+              examples:
+                example:
+                  value:
+                    id: "123464"
+                    name: Ashraf Ghead
+                    age: "30"
+                    position: CTO
+                    department: ""
+                    avaliable: true
+                    hasLV: true
+                    LVID: string
+                    createdAt: string
+                    updatedAt: string
+                    isAdmin: true
+      x-swagger-router-controller: User
+    delete:
+      tags:
+      - user
+      summary: Delete a specific user info
+      description: 'Delete a specific user info (This operation can only performed
+        by Admin) '
+      operationId: delete-users-userId
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: User
+  /requests:
+    get:
+      tags:
+      - req
+      summary: Get All requests information
+      description: "Get All requests information (This operation response is based\
+        \ on how made the request) \n* if the request was issued by the admin: the\
+        \ response will contain all leaving requests\n* if the request was issued\
+        \ by the department head : the response will contain all leaving requests\
+        \ inside this department\n* if the request was issued by a normal user: the\
+        \ response will contain all leaving requests issued by this user\n"
+      operationId: get-requests
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Request'
+                x-content-type: application/json
+              examples:
+                example:
+                  value:
+                    id: "2110"
+                    requestedBy:
+                      id: "3645"
+                      name: Omar Hamed
+                      position: sr. developer
+                      department:
+                        id: "236"
+                        name: Developers
+                    status: 1
+                    reason: A Family matter
+                    createdAt: 2019-10-6
+                    updatedAt: 2019-10-6
+      x-swagger-router-controller: Req
+    post:
+      tags:
+      - req
+      summary: Post  a new leaving request
+      description: Post a new leaving request (Any registerd user can perform this
+        operation)
+      operationId: post-requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+            examples:
+              example:
+                value:
+                  reason: A Family matter
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+              examples:
+                example:
+                  value:
+                    id: "2110"
+                    requestedBy:
+                      id: "3645"
+                      name: Omar Hamed
+                      position: sr. developer
+                      department:
+                        id: "236"
+                        name: Developers
+                    status: 1
+                    reason: A Family matter
+                    createdAt: 2019-10-6
+                    updatedAt: 2019-10-6
+      x-swagger-router-controller: Req
+    delete:
+      tags:
+      - req
+      summary: '[DANGER] Delete All requests information'
+      description: '[DANGER] Delete All requests information (This operation can only
+        performed by Admins users) '
+      operationId: delete-requests
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: Req
+  /requests/{reqId}:
+    get:
+      tags:
+      - req
+      summary: Get a specific request
+      description: "Get a specific request \nThis operation can be performed by:\n\
+        * Admins users\n* The leaving request owner\n* The department head of the\
+        \ leaving request owner"
+      operationId: get-requests-reqId
+      parameters:
+      - name: reqId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+              examples:
+                example:
+                  value:
+                    id: "2110"
+                    requestedBy:
+                      id: "3645"
+                      name: Omar Hamed
+                      position: sr. developer
+                      department:
+                        id: "236"
+                        name: Developers
+                    status: 1
+                    reason: A Family matter
+                    createdAt: 2019-10-6
+                    updatedAt: 2019-10-6
+      x-swagger-router-controller: Req
+    put:
+      tags:
+      - req
+      summary: Edit  a specific request
+      description: "Edit  a specific request This operation can be performed by: \n\
+        * Admins users\n* The leaving request owner"
+      operationId: put-requests-reqId
+      parameters:
+      - name: reqId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+            examples:
+              example:
+                value:
+                  status: 2
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+              examples:
+                example:
+                  value:
+                    id: "2110"
+                    requestedBy:
+                      id: "3645"
+                      name: Omar Hamed
+                      position: sr. developer
+                      department:
+                        id: "236"
+                        name: Developers
+                    status: 2
+                    reason: A Family matter
+                    createdAt: 2019-10-6
+                    updatedAt: 2019-10-6
+      x-swagger-router-controller: Req
+    delete:
+      tags:
+      - req
+      summary: DELETE  a specific request
+      description: "DELETE  a specific request \nThis operation can be performed by:\
+        \ \n* Admins users\n* The leaving request owner"
+      operationId: delete-requests-reqId
+      parameters:
+      - name: reqId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: Req
+  /requests/{reqId}/accept:
+    post:
+      tags:
+      - req
+      summary: Accept that specific request
+      description: "This endpoint is to to accept the leaving request issued by user\n\
+        This operation can only be performed by\n* Admin users\n* The department head\
+        \ which the user belongs "
+      operationId: post-requests-reqId-accept
+      parameters:
+      - name: reqId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: Req
+  /requests/{reqId}/refuse:
+    post:
+      tags:
+      - req
+      summary: Refuse that specific request
+      description: "This endpoint is to to refuse the leaving request issued by user\n\
+        This operation can only be performed by\n* Admin users\n* The department head\
+        \ which the user belongs "
+      operationId: post-requests-reqId-refuse
+      parameters:
+      - name: reqId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      x-swagger-router-controller: Req
+components:
+  schemas:
+    Department:
+      title: Department
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        abbr:
+          type: string
+        depHead:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+      example:
+        createdAt: 2000-01-23
+        name: name
+        depHead:
+          hasLV: true
+          LVID: LVID
+          isAdmin: true
+          createdAt: createdAt
+          password: password
+          avaliable: true
+          imageUrl: imageUrl
+          name: name
+          id: id
+          position: position
+          department: null
+          age: age
+          email: email
+          updatedAt: updatedAt
+        id: id
+        abbr: abbr
+        updatedAt: updatedAt
+      x-examples:
+        example:
+          id: "1234"
+          name: HR Department
+          abbr: HR
+          depHead: ""
+          createdAt: 2019-08-24
+          updatedAt: 2019-08-24
+    User:
+      title: User
+      required:
+      - LVID
+      - age
+      - avaliable
+      - createdAt
+      - department
+      - email
+      - hasLV
+      - id
+      - isAdmin
+      - name
+      - password
+      - position
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        age:
+          type: string
+        position:
+          type: string
+        department:
+          $ref: '#/components/schemas/Department'
+        avaliable:
+          type: boolean
+        hasLV:
+          type: boolean
+        LVID:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        isAdmin:
+          type: boolean
+        imageUrl:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        hasLV: true
+        LVID: LVID
+        isAdmin: true
+        createdAt: createdAt
+        password: password
+        avaliable: true
+        imageUrl: imageUrl
+        name: name
+        id: id
+        position: position
+        department: null
+        age: age
+        email: email
+        updatedAt: updatedAt
+      x-examples:
+        example:
+          id: "123464"
+          name: Ashraf Ghead
+          age: "30"
+          position: CEO
+          department: ""
+          avaliable: true
+          hasLV: true
+          LVID: string
+          createdAt: string
+          updatedAt: string
+          isAdmin: true
+    Request:
+      title: Request
+      required:
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+        requestedBy:
+          $ref: '#/components/schemas/User'
+        status:
+          maximum: 3
+          minimum: 1
+          type: number
+        reason:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      example:
+        requestedBy:
+          hasLV: true
+          LVID: LVID
+          isAdmin: true
+          createdAt: createdAt
+          password: password
+          avaliable: true
+          imageUrl: imageUrl
+          name: name
+          id: id
+          position: position
+          department: null
+          age: age
+          email: email
+          updatedAt: updatedAt
+        reason: reason
+        createdAt: createdAt
+        id: id
+        status: 1.16016563809220230041319155134260654449462890625
+        updatedAt: updatedAt
+      x-examples:
+        example:
+          id: "364987"
+          requestedBy:
+            id: "3698"
+            name: Omar Hamed
+            position: Sr. Developer
+            department:
+              id: "3789"
+              name: Developes
+              abbr: DEV
+          status: 1
+          reason: Personal matter
+          createdAt: 2019-10-25
+          updatedAt: 2019-10-25
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      name: APIKey
+      in: header

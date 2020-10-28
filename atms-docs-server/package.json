@@ -1,0 +1,20 @@
+{
+  "name": "atms",
+  "version": "1.0.0",
+  "description": "Attendance Tracking Management System (ATMS) is a part of an HR System, that allows the Admin to track the attendance and leaving of the employees, tracks their availability during the day, and managestheir profiles.",
+  "main": "index.js",
+  "scripts": {
+	"prestart": "npm install",
+	"start": "node index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "oas3-tools": "^2.0.2"
+  }
+}
