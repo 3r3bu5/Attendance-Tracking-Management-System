@@ -44,6 +44,8 @@ typings/
 
 # Optional eslint cache
 .eslintcache
+.eslintrc.js
+.prettierrc
 
 # Optional REPL history
 .node_repl_history
@@ -56,6 +58,9 @@ typings/
 
 # dotenv environment variables file
 .env
+.vscode/
 
 # next.js build output
 .next
+*.rest
+config.js
