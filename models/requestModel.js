@@ -4,8 +4,8 @@ const ReqSchema = new mongoose.Schema(
   {
     _id: { type: String, default: uuidv4 },
     requestedBy: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.String,
+      ref: "User",
     },
     status: {
       type: Number,
@@ -18,7 +18,8 @@ const ReqSchema = new mongoose.Schema(
       required: true,
     },
     reviewedBy: {
-      type: String,
+      type: mongoose.Schema.Types.String,
+      ref: "User",
     },
   },
   { timestamps: true }

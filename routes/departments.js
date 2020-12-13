@@ -16,6 +16,7 @@ const Department = require("../models/departmentModel");
 
 router.get("/", (req, res, next) => {
   Department.find()
+    .populate("depHead", "_id name email avaliable")
     .then((departments) => {
       res.status(200);
       res.setHeader("content-type", "application/json");
@@ -59,6 +60,7 @@ router.delete("/", (req, res, next) => {
 
 router.get("/:depId", (req, res, next) => {
   Department.findById(req.params.depId)
+    .populate("depHead", "_id name email avaliable")
     .then((department) => {
       if (department != null) {
         res.status(200);

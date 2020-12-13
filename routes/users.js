@@ -18,6 +18,13 @@ const User = require("../models/userModel");
 
 router.get("/", (req, res, next) => {
   User.find()
+    .populate({
+      path: "department depHead",
+      populate: {
+        path: "depHead",
+        select: "name avaliable",
+      },
+    })
     .then((users) => {
       res.status(200);
       res.setHeader("content-type", "application/json");
@@ -61,6 +68,13 @@ router.delete("/", (req, res, next) => {
 
 router.get("/:userId", (req, res, next) => {
   User.findById(req.params.userId)
+    .populate({
+      path: "department depHead",
+      populate: {
+        path: "depHead",
+        select: "name avaliable",
+      },
+    })
     .then((user) => {
       if (user != null) {
         res.status(200);
@@ -147,7 +161,6 @@ router.post("/:userId/enter", (req, res, next) => {
       if (user != null) {
         const data = {
           entry: Date.now(), // save current time as check-in entry
-          avaliable: true,
         };
         startinghour = 09; // startinghour of the day (remember to use 2 digits ex: if the starting hour is 9 use 09 NOT 9)
         allowanceminutes = 10; // minutes allowed to check in after workinghour
@@ -183,6 +196,7 @@ router.post("/:userId/enter", (req, res, next) => {
               currentMinutes <= allowanceminutes
             ) {
               user.attendance.push(data);
+              user.avaliable = true;
               user
                 .save()
                 .then((user) => {
@@ -270,7 +284,7 @@ router.post("/:userId/leave", (req, res, next) => {
             if (empWorkedHours >= workHours) {
               // check if employee has completed the specified workhours
               lastAttendance.exit.time = Date.now();
-              lastAttendance.avaliable = false;
+              user.avaliable = false;
               lastAttendance.workingHours = Math.round(empWorkedHours);
               user
                 .save()

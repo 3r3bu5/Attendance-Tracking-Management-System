@@ -1,14 +1,18 @@
 ## To do
 
 - Departments
-  - Router
-  - Model
+  - ~~Router~~
+  - ~~Model~~
   - Controllers
 - Users
-  - Router
-  - Model
+  - ~~Router~~
+  - ~~Model~~
   - Controllers
 - Requests
-  - Router
-  - Model
+
+  - ~~Router~~
+  - ~~Model~~
   - Controllers
+
+- Auth
+  - LogIn/Register

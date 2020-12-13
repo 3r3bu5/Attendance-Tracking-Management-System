@@ -12,8 +12,8 @@ const DepSchema = new mongoose.Schema(
       unique: true,
     },
     depHead: {
-      type: String,
-      unique: true,
+      type: mongoose.Schema.Types.String,
+      ref: "User",
     },
   },
   { timestamps: true }

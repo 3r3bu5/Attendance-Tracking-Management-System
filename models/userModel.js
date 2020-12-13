@@ -27,10 +27,10 @@ const UserSchema = new mongoose.Schema(
     },
     position: {
       type: String,
-      required: true,
     },
     department: {
-      type: String,
+      type: mongoose.Schema.Types.String,
+      ref: "Department",
     },
     isAdmin: {
       type: Boolean,
@@ -39,16 +39,16 @@ const UserSchema = new mongoose.Schema(
     imageURL: {
       type: String,
     },
+    avaliable: {
+      type: Boolean,
+      default: false,
+    },
     absenceDays: {
       type: Number,
       default: 0,
     },
     attendance: [
       {
-        avaliable: {
-          type: Boolean,
-          default: false,
-        },
         workingHours: {
           type: Number,
           default: 0,
