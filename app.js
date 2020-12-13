@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var config = require("./config");
 const mongoose = require("mongoose");
+const passport = require("passport");
 
 // import routes
 var indexRouter = require("./routes/index");
@@ -32,6 +33,10 @@ mongoose
   })
   .then(console.log("Connected to DB successfully"));
 mongoose.set("useCreateIndex", true);
+
+// passport initilaize
+app.use(passport.initialize());
+app.use(passport.session());
 
 // routes
 app.use("/", indexRouter);

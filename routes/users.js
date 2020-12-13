@@ -6,6 +6,10 @@ var router = express.Router();
 
 const User = require("../models/userModel");
 
+// import middlewares
+const authenticate = require("../middlewares/auth");
+const passport = require("passport");
+
 /*
 @Route      >    METHOD /users
 @Behavioure >    Return all users / 
@@ -33,6 +37,7 @@ router.get("/", (req, res, next) => {
     .catch((err) => next(err));
 });
 
+/*
 router.post("/", (req, res, next) => {
   User.create(req.body)
     .then((users) => {
@@ -42,6 +47,7 @@ router.post("/", (req, res, next) => {
     })
     .catch((err) => next(err));
 });
+*/
 router.put("/", (req, res, next) => {
   res.status(405);
   res.setHeader("content-type", "application/json");
@@ -54,6 +60,47 @@ router.delete("/", (req, res, next) => {
       res.json({ message: "All users have been deleted successfully " });
     })
     .catch((err) => next(err));
+});
+
+router.post("/register", (req, res, next) => {
+  User.register(
+    new User({
+      email: req.body.email,
+      name: req.body.name,
+      department: req.body.department,
+      age: req.body.age,
+      gender: req.body.gender,
+      position: req.body.position,
+    }),
+    req.body.password,
+    (err, user) => {
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ err: err });
+      } else {
+        user.save((err, user) => {
+          if (err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({ err: err });
+            return;
+          }
+
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ success: true, status: "Registration Successful!" });
+        });
+      }
+    }
+  );
+});
+
+router.post("/login", passport.authenticate("local"), (req, res, next) => {
+  var token = authenticate.getToken({ _id: req.user._id });
+  res.status(200);
+  res.setHeader("Content-Type", "application/json");
+  res.json({ status: true, token: token, message: "Logged-In Successful!" });
 });
 
 /*
