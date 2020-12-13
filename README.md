@@ -15,4 +15,5 @@
   - Controllers
 
 - Auth
-  - LogIn/Register
+  - ~~Local logIn/Register~~
+  - Implement authorization and access control
