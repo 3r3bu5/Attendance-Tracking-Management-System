@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var departmentsRouter = require("./routes/departments");
+var requestsRouter = require("./routes/requests");
 
 var app = express();
 
@@ -36,7 +37,7 @@ mongoose.set("useCreateIndex", true);
 app.use("/", indexRouter);
 app.use("/departments", departmentsRouter);
 app.use("/users", usersRouter);
-
+app.use("/requests", requestsRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
