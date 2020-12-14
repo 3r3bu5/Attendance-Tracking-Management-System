@@ -13,6 +13,7 @@ const passport = require("passport");
 // config file
 
 var config = require("../config");
+const Department = require("../models/departmentModel");
 
 /*
 @Route      >    METHOD /users
@@ -211,7 +212,8 @@ router.get("/:userId", authenticate.verifyUser, (req, res, next) => {
         if (user.department != null) {
           if (
             req.user._id == user._id ||
-            req.user._id == user.department.depHead._id
+            req.user._id == user.department.depHead._id ||
+            req.user.isAdmin == true
           ) {
             res.status(200);
             res.setHeader("content-type", "application/json");
@@ -239,16 +241,47 @@ router.get("/:userId", authenticate.verifyUser, (req, res, next) => {
     .catch((err) => next(err));
 });
 
+// assign user to a department
 router.post(
-  "/:userId",
+  "/:userId/assign",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
   (req, res, next) => {
-    res.status(405);
-    res.setHeader("content-type", "application/json");
-    res.json({ message: "METHOD is not allowed" });
+    User.findById(req.params.userId)
+      .then((user) => {
+        if (user != null) {
+          user.department = req.body.department;
+          Department.findById(req.body.department).then((department) => {
+            if (department != null) {
+              user
+                .save()
+                .then((user) => {
+                  console.log(user);
+                  res.status(200);
+                  res.setHeader("content-type", "application/json");
+                  res.json({
+                    message: "assigned user to department successfully",
+                  });
+                })
+                .catch((err) => next(err));
+            } else {
+              res.status(404);
+              res.setHeader("content-type", "application/json");
+              res.json({
+                message: "Department doesn't exist",
+              });
+            }
+          });
+        } else {
+          err = new Error("User doesn't exists");
+          err.statusCode = 404;
+          return next(err);
+        }
+      })
+      .catch((err) => next(err));
   }
 );
+
 router.put(
   "/:userId",
   authenticate.verifyUser,

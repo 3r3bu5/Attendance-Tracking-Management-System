@@ -3,6 +3,9 @@ var router = express.Router();
 
 // import Department model
 const Request = require("../models/requestModel");
+// import middlewares
+const authenticate = require("../middlewares/auth");
+const passport = require("passport");
 
 /*
 @Route      >    METHOD /requests
@@ -20,18 +23,43 @@ if the request was issued by a normal user:
     the response will contain all leaving requests issued by this user
 */
 
-router.get("/", (req, res, next) => {
-  Request.find()
-    .then((requests) => {
-      res.status(200);
-      res.setHeader("content-type", "application/json");
-      res.json(requests);
-    })
-    .catch((err) => next(err));
+router.get("/", authenticate.verifyUser, (req, res, next) => {
+  if (req.user.isAdmin == true) {
+    Request.find()
+      .populate("requestedBy departmentId", "name")
+      .then((requests) => {
+        res.status(200);
+        res.setHeader("content-type", "application/json");
+        res.json(requests);
+      })
+      .catch((err) => next(err));
+  } else if (req.user.headOfDepartmentId != null) {
+    Request.find({ departmentId: req.user.headOfDepartmentId })
+      .populate("requestedBy departmentId", "name avaliable")
+      .then((requests) => {
+        res.status(200);
+        res.setHeader("content-type", "application/json");
+        res.json(requests);
+      })
+      .catch((err) => next(err));
+  } else {
+    Request.find({ requestedBy: req.user._id })
+      .populate("requestedBy departmentId", "name avaliable")
+      .then((requests) => {
+        res.status(200);
+        res.setHeader("content-type", "application/json");
+        res.json(requests);
+      })
+      .catch((err) => next(err));
+  }
 });
 
-router.post("/", (req, res, next) => {
-  Request.create(req.body)
+router.post("/", authenticate.verifyUser, (req, res, next) => {
+  Request.create({
+    requestedBy: req.user._id,
+    departmentId: req.user.department,
+    reason: req.body.reason,
+  })
     .then((request) => {
       res.status(200);
       res.setHeader("content-type", "application/json");
@@ -39,19 +67,30 @@ router.post("/", (req, res, next) => {
     })
     .catch((err) => next(err));
 });
-router.put("/", (req, res, next) => {
-  res.status(405);
-  res.setHeader("content-type", "application/json");
-  res.json({ message: "METHOD is not allowed" });
-});
-router.delete("/", (req, res, next) => {
-  Request.deleteMany({})
-    .then((requests) => {
-      res.setHeader("content-type", "application/json");
-      res.json({ message: "All requests have been deleted successfully " });
-    })
-    .catch((err) => next(err));
-});
+
+router.put(
+  "/",
+  authenticate.verifyUser,
+  authenticate.verifyAdmin,
+  (req, res, next) => {
+    res.status(405);
+    res.setHeader("content-type", "application/json");
+    res.json({ message: "METHOD is not allowed" });
+  }
+);
+router.delete(
+  "/",
+  authenticate.verifyUser,
+  authenticate.verifyAdmin,
+  (req, res, next) => {
+    Request.deleteMany({})
+      .then((requests) => {
+        res.setHeader("content-type", "application/json");
+        res.json({ message: "All requests have been deleted successfully " });
+      })
+      .catch((err) => next(err));
+  }
+);
 
 /*
 @Route      >    METHOD /requests/:reqId
@@ -65,57 +104,96 @@ Get a specific request, This operation can be performed by:
         * The department head of the leaving request owner
 */
 
-router.get("/:reqId", (req, res, next) => {
+router.get("/:reqId", authenticate.verifyUser, (req, res, next) => {
   Request.findById(req.params.reqId)
+    .populate("requestedBy departmentId", "name avaliable")
     .then((request) => {
       if (request != null) {
-        res.status(200);
-        res.setHeader("content-type", "application/json");
-        res.json(request);
-      } else {
-        err = new Error("request doesn't exists");
-        err.statusCode = 404;
-        return next(err);
-      }
-    })
-    .catch((err) => next(err));
-});
-
-router.post("/:reqId", (req, res, next) => {
-  res.status(405);
-  res.setHeader("content-type", "application/json");
-  res.json({ message: "METHOD is not allowed" });
-});
-router.put("/:reqId", (req, res, next) => {
-  Request.findById(req.params.reqId)
-    .then((request) => {
-      if (req.body.reason) {
-        request.reason = req.body.reason;
-      }
-      request
-        .save()
-        .then((request) => {
+        if (req.user.isAdmin == true) {
           res.status(200);
-          res.setHeader("Content-Type", "application/json");
-          res.json({
-            message: "request has been edited successfully",
-            request,
-          });
-        })
-        .catch((err) => next(err));
+          res.setHeader("content-type", "application/json");
+          res.json(request);
+        } else if (req.user.headOfDepartmentId == request.departmentId._id) {
+          res.status(200);
+          res.setHeader("content-type", "application/json");
+          res.json(request);
+        } else if (req.user._id == request.requestedBy) {
+          res.status(200);
+          res.setHeader("content-type", "application/json");
+          res.json(request);
+        } else {
+          res.status(401);
+          res.setHeader("content-type", "application/json");
+          res.json({ message: "You are not allowed to see this request!" });
+        }
+      } else {
+        res.status(401);
+        res.setHeader("content-type", "application/json");
+        res.json({ message: "Request doesn't exist!" });
+      }
     })
     .catch((err) => next(err));
 });
 
-router.delete("/:reqId", (req, res, next) => {
-  Request.findByIdAndRemove(req.params.reqId)
+router.post(
+  "/:reqId",
+  authenticate.verifyUser,
+  authenticate.verifyAdmin,
+  (req, res, next) => {
+    res.status(405);
+    res.setHeader("content-type", "application/json");
+    res.json({ message: "METHOD is not allowed" });
+  }
+);
+router.put("/:reqId", authenticate.verifyUser, (req, res, next) => {
+  Request.findById(req.params.reqId)
     .then((request) => {
       if (request != null) {
-        res.status(200);
-        res.setHeader("content-type", "application/json");
-        res.json({ message: "Deleted successfully" });
+        if (req.user._id == request.requestedBy) {
+          if (req.body.reason) {
+            request.reason = req.body.reason;
+          }
+          request
+            .save()
+            .then((request) => {
+              res.status(200);
+              res.setHeader("Content-Type", "application/json");
+              res.json({
+                message: "request has been edited successfully",
+                request,
+              });
+            })
+            .catch((err) => next(err));
+        } else {
+          res.status(401);
+          res.setHeader("content-type", "application/json");
+          res.json({ message: "You are not allowed to edit this request" });
+        }
       } else {
-        err = new Error("request doesn't exists");
+        res.status(404);
+        res.setHeader("content-type", "application/json");
+        res.json({ message: "Request doens't exist" });
+      }
+    })
+    .catch((err) => next(err));
+});
+
+router.delete("/:reqId", authenticate.verifyUser, (req, res, next) => {
+  Request.findById(req.params.reqId)
+    .then((request) => {
+      if (request != null && req.user._id == request.requestedBy) {
+        request
+          .remove()
+          .then((request) => {
+            res.status(200);
+            res.setHeader("content-type", "application/json");
+            res.json({ message: "Deleted successfully" });
+          })
+          .catch((err) => next(err));
+      } else {
+        err = new Error(
+          "request doesn't exists or you are not allowed to delete this request"
+        );
         err.statusCode = 404;
         return next(err);
       }

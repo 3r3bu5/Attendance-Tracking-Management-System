@@ -35,6 +35,11 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    headOfDepartmentId: {
+      unique: true,
+      type: mongoose.Schema.Types.String,
+      ref: "Department",
+    },
     imageURL: {
       type: String,
     },

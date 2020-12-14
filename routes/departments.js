@@ -3,6 +3,7 @@ var router = express.Router();
 
 // import Department model
 const Department = require("../models/departmentModel");
+const User = require("../models/userModel");
 
 // import middlewares
 const authenticate = require("../middlewares/auth");
@@ -194,12 +195,32 @@ router.post(
           department
             .save()
             .then((department) => {
-              res.status(200);
-              res.setHeader("content-type", "application/json");
-              res.json({
-                message: "Department's head assigned successfully successfully",
+              User.findById(req.body.depHead).then((user) => {
+                if (user != null) {
+                  user.headOfDepartmentId = req.params.depId;
+                  user
+                    .save()
+                    .then((user) => {
+                      console.log(user);
+                      res.status(200);
+                      res.setHeader("content-type", "application/json");
+                      res.json({
+                        message:
+                          "Department's head assigned successfully successfully",
+                      });
+                    })
+                    .catch((err) => next(err));
+                } else {
+                  res.status(404);
+                  res.setHeader("content-type", "application/json");
+                  res.json({
+                    message: "User doesn't exist",
+                  });
+                }
               });
             })
+            .catch((err) => next(err))
+
             .catch((err) => next(err));
         } else {
           err = new Error("Department doesn't exists");
