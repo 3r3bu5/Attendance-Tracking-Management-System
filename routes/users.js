@@ -189,6 +189,50 @@ router.post("/init", (req, res, next) => {
 });
 
 /*
+@Route      >    METHOD /avaliable
+@Behavioure >    List all avaliable employees at the moment  / 
+                 List all avaliable employees in a specific department at the moment / 
+                 
+@Access     >   For admins: to list all the avaliable employees
+                For head of the department: to list all the avaliable employees of this department
+                 
+*/
+
+router.get("/avaliable", authenticate.verifyUser, (req, res, next) => {
+  if (req.user.isAdmin == true) {
+    User.find({ avaliable: true })
+      .populate("department", "name")
+      .select("_id name email department")
+      .then((users) => {
+        res.status(200);
+        res.setHeader("content-type", "application/json");
+        res.json({
+          message: `there are ${users.length} avaliable employee/s`,
+          users,
+        });
+      })
+      .catch((err) => next(err));
+  } else if (req.user.headOfDepartmentId != null) {
+    User.find({ avaliable: true, department: req.user.headOfDepartmentId })
+      .populate("department", "name")
+      .select("_id name email department")
+      .then((users) => {
+        res.status(200);
+        res.setHeader("content-type", "application/json");
+        res.json({
+          message: `there are ${users.length} avaliable employee/s`,
+          users,
+        });
+      })
+      .catch((err) => next(err));
+  } else {
+    res.status(401);
+    res.setHeader("content-type", "application/json");
+    res.json({ message: "You are not allowed to perform this operation!" });
+  }
+});
+
+/*
 @Route      >    METHOD /users/:userId/enter  /leave
 @Behavioure >    check in for a specific user / 
                  checkout for a specific user / 
@@ -484,46 +528,41 @@ router.post(
   }
 );
 
-router.put(
-  "/:userId",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  (req, res, next) => {
-    User.findById(req.params.userId)
-      .then((user) => {
-        if (req.body.name) {
-          user.name = req.body.name;
-        }
-        if (req.body.age) {
-          user.age = req.body.age;
-        }
-        if (req.body.emaill) {
-          user.emaill = req.body.emaill;
-        }
-        if (req.body.position) {
-          user.position = req.body.position;
-        }
-        if (req.body.gender) {
-          user.gender = req.body.gender;
-        }
-        if (req.body.department) {
-          user.department = req.body.department;
-        }
-        if (req.body.isAdmin && req.user.isAdmin == true) {
-          user.isAdmin = req.body.isAdmin;
-        }
-        user
-          .save()
-          .then((user) => {
-            res.status(200);
-            res.setHeader("Content-Type", "application/json");
-            res.json({ message: "user has been edited successfully", user });
-          })
-          .catch((err) => next(err));
-      })
-      .catch((err) => next(err));
-  }
-);
+router.put("/:userId", authenticate.verifyUser, (req, res, next) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (req.body.name && req.user.isAdmin == true) {
+        user.name = req.body.name;
+      }
+      if (req.body.age) {
+        user.age = req.body.age;
+      }
+      if (req.body.emaill && req.user.isAdmin == true) {
+        user.emaill = req.body.emaill;
+      }
+      if (req.body.position && req.user.isAdmin == true) {
+        user.position = req.body.position;
+      }
+      if (req.body.gender) {
+        user.gender = req.body.gender;
+      }
+      if (req.body.department && req.user.isAdmin == true) {
+        user.department = req.body.department;
+      }
+      if (req.body.isAdmin && req.user.isAdmin == true) {
+        user.isAdmin = req.body.isAdmin;
+      }
+      user
+        .save()
+        .then((user) => {
+          res.status(200);
+          res.setHeader("Content-Type", "application/json");
+          res.json({ message: "user has been edited successfully", user });
+        })
+        .catch((err) => next(err));
+    })
+    .catch((err) => next(err));
+});
 router.delete(
   "/:userId",
   authenticate.verifyUser,

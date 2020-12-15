@@ -21,12 +21,13 @@
 
 - Requirment based changes
 
-  - Add the (avaliable users at the moment) endpoint
-    for admins: to list all the avaliable employees
-    for head of the department: to list all the avaliable employees of this department
+  - ~~Add the (avaliable users at the moment) endpoint
+    Admins: to list all the avaliable employees,
+    Head of the department: to list all the avaliable employees of this department~~
 
 - Extras
 
+  - Seed dummy data into the db for further and better testing
   - Add default department for admins user
   - Add default department for users who are not assigned to any
   - Add restrictions for leaving requests
