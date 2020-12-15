@@ -19,7 +19,14 @@
   - ~~Local logIn/Register~~
   - ~~Implement authorization and access control~~
 
+- Requirment based changes
+
+  - Add the (avaliable users at the moment) endpoint
+    for admins: to list all the avaliable employees
+    for head of the department: to list all the avaliable employees of this department
+
 - Extras
+
   - Add default department for admins user
   - Add default department for users who are not assigned to any
   - Add restrictions for leaving requests
@@ -30,3 +37,7 @@
   - CORS
   - Use HTTPS over HTTP
   - Publish the 1.1 v1 of the API on Swagger
+
+- View based requirments (Maybe I will do it maybe not)
+  - Notification subsystem to the leaving requests
+  - Track availability during the day
