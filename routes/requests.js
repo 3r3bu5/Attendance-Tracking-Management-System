@@ -1,8 +1,10 @@
 var express = require("express");
 var router = express.Router();
 
-// import Department model
+// import Request & User model
 const Request = require("../models/requestModel");
+const User = require("../models/userModel");
+
 // import middlewares
 const authenticate = require("../middlewares/auth");
 const passport = require("passport");
@@ -59,6 +61,7 @@ router.post("/", authenticate.verifyUser, (req, res, next) => {
     requestedBy: req.user._id,
     departmentId: req.user.department,
     reason: req.body.reason,
+    date: Date.now(),
   })
     .then((request) => {
       res.status(200);
@@ -113,11 +116,14 @@ router.get("/:reqId", authenticate.verifyUser, (req, res, next) => {
           res.status(200);
           res.setHeader("content-type", "application/json");
           res.json(request);
-        } else if (req.user.headOfDepartmentId == request.departmentId._id) {
+        } else if (
+          req.user.headOfDepartmentId &&
+          req.user.headOfDepartmentId == request.departmentId._id
+        ) {
           res.status(200);
           res.setHeader("content-type", "application/json");
           res.json(request);
-        } else if (req.user._id == request.requestedBy) {
+        } else if (req.user._id == request.requestedBy._id) {
           res.status(200);
           res.setHeader("content-type", "application/json");
           res.json(request);
@@ -135,16 +141,6 @@ router.get("/:reqId", authenticate.verifyUser, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.post(
-  "/:reqId",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  (req, res, next) => {
-    res.status(405);
-    res.setHeader("content-type", "application/json");
-    res.json({ message: "METHOD is not allowed" });
-  }
-);
 router.put("/:reqId", authenticate.verifyUser, (req, res, next) => {
   Request.findById(req.params.reqId)
     .then((request) => {
@@ -181,7 +177,10 @@ router.put("/:reqId", authenticate.verifyUser, (req, res, next) => {
 router.delete("/:reqId", authenticate.verifyUser, (req, res, next) => {
   Request.findById(req.params.reqId)
     .then((request) => {
-      if (request != null && req.user._id == request.requestedBy) {
+      if (
+        (request != null && req.user._id == request.requestedBy) ||
+        req.user.isAdmin == true
+      ) {
         request
           .remove()
           .then((request) => {
@@ -214,40 +213,122 @@ This operation can only be performed by:
     * The department head which the employee belongs
 */
 
-router.post("/:reqId/accept", (req, res, next) => {
+router.post("/:reqId/accept", authenticate.verifyUser, (req, res, next) => {
   Request.findById(req.params.reqId)
     .then((request) => {
-      request.status = 2;
-      request
-        .save()
-        .then((request) => {
-          res.status(200);
-          res.setHeader("Content-Type", "application/json");
+      if (request != null) {
+        if (
+          req.user.isAdmin == true ||
+          (req.user.headOfDepartmentId &&
+            req.user.headOfDepartmentId == request.departmentId)
+        ) {
+          User.findById(request.requestedBy)
+            .then((user) => {
+              const lastAttendance =
+                user.attendance[user.attendance.length - 1];
+              const lastAttendanceEntryTimestamp = lastAttendance.entry.getTime();
+              if (user.attendance && user.attendance.length > 0) {
+                if (lastAttendance.exit.time) {
+                  //means that user has signed out for today
+                  res.status(200);
+                  res.setHeader("content-type", "application/json");
+                  res.json({
+                    message: "User is already signed out for today!",
+                  });
+                } else {
+                  // get the last checkin entry and calculate the total working hours of the employee
+                  currentDate = new Date();
+                  empWorkedHours =
+                    (currentDate.getTime() - lastAttendanceEntryTimestamp) /
+                    1000;
+                  empWorkedHours /= 60 * 60;
+                  console.log(empWorkedHours, currentDate);
+                  request.status = 2;
+                  request
+                    .save()
+                    .then((request) => {
+                      lastAttendance.exit.time = currentDate.getTime();
+                      lastAttendance.exit.reason = 2;
+                      user.avaliable = false;
+                      lastAttendance.LVRID = request._id;
+                      lastAttendance.hasLVR = true;
+                      lastAttendance.workingHours = Math.round(empWorkedHours);
+                      user
+                        .save()
+                        .then((user) => {
+                          res.status(200);
+                          res.setHeader("content-type", "application/json");
+                          res.json({
+                            message: "Request has been accepted successfully",
+                            request,
+                          });
+                        })
+                        .catch((err) => next(err));
+                    })
+                    .catch((err) => next(err));
+                }
+              } else {
+                res.status(400);
+                res.setHeader("content-type", "application/json");
+                res.json({ message: "User has no attendance entry! " });
+              }
+            })
+            .catch((err) => next(err));
+        } else {
+          res.status(401);
+          res.setHeader("content-type", "application/json");
           res.json({
-            message: "request has been accepted ",
-            request,
+            message: "You are not allowed to perform this operation! ",
           });
-        })
-        .catch((err) => next(err));
+        }
+      } else {
+        res.status(404);
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          message: "request doesn't exist",
+        });
+      }
     })
     .catch((err) => next(err));
 });
 
-router.post("/:reqId/refuse", (req, res, next) => {
+router.post("/:reqId/refuse", authenticate.verifyUser, (req, res, next) => {
   Request.findById(req.params.reqId)
     .then((request) => {
-      request.status = 3;
-      request
-        .save()
-        .then((request) => {
-          res.status(200);
-          res.setHeader("Content-Type", "application/json");
+      if (request != null) {
+        console.log(req.user.headOfDepartmentId, request.departmentId);
+
+        if (
+          req.user.isAdmin == true ||
+          (req.user.headOfDepartmentId &&
+            req.user.headOfDepartmentId == request.departmentId)
+        ) {
+          request.status = 3;
+          request
+            .save()
+            .then((request) => {
+              res.status(200);
+              res.setHeader("content-type", "application/json");
+              res.json({
+                message: "Request has been refused successfully",
+                request,
+              });
+            })
+            .catch((err) => next(err));
+        } else {
+          res.status(401);
+          res.setHeader("content-type", "application/json");
           res.json({
-            message: "request has been refused ",
-            request,
+            message: "You are not allowed to perform this operation! ",
           });
-        })
-        .catch((err) => next(err));
+        }
+      } else {
+        res.status(404);
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          message: "request doesn't exist",
+        });
+      }
     })
     .catch((err) => next(err));
 });

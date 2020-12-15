@@ -45,7 +45,6 @@ const UserSchema = new mongoose.Schema(
     },
     avaliable: {
       type: Boolean,
-      default: false,
     },
     absenceDays: {
       type: Number,
@@ -68,7 +67,6 @@ const UserSchema = new mongoose.Schema(
             // 1 for normal exit (end of the day)
             // 2 for exit with request
             type: Number,
-            default: 1,
             min: 1,
             max: 2,
           },

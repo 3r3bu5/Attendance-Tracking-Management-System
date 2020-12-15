@@ -23,6 +23,10 @@ const ReqSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    date: {
+      type: Date,
+      required: true,
+    },
     reviewedBy: {
       type: mongoose.Schema.Types.String,
       ref: "User",
