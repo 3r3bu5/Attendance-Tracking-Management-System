@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../models/userModel");
+const User = require("../user/user.model");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JwtStrategy = require("passport-jwt").Strategy;

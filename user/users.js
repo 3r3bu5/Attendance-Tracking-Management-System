@@ -4,7 +4,7 @@ var router = express.Router();
 
 // import usersModel
 
-const User = require("../models/userModel");
+const User = require("./user.model");
 
 // import middlewares
 const authenticate = require("../middlewares/auth");
@@ -13,7 +13,7 @@ const passport = require("passport");
 // config file
 
 var config = require("../config");
-const Department = require("../models/departmentModel");
+const Department = require("../department/department.model");
 
 /*
 @Route      >    METHOD /users
@@ -207,7 +207,7 @@ router.get("/avaliable", authenticate.verifyUser, (req, res, next) => {
         res.status(200);
         res.setHeader("content-type", "application/json");
         res.json({
-          message: `there are ${users.length} avaliable employee/s`,
+          message: `there are ${users.length} avaliable employee(s) right now`,
           users,
         });
       })
@@ -220,7 +220,7 @@ router.get("/avaliable", authenticate.verifyUser, (req, res, next) => {
         res.status(200);
         res.setHeader("content-type", "application/json");
         res.json({
-          message: `there are ${users.length} avaliable employee/s`,
+          message: `there are ${users.length} avaliable employee(s) right now`,
           users,
         });
       })

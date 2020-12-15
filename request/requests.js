@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 // import Request & User model
-const Request = require("../models/requestModel");
-const User = require("../models/userModel");
+const Request = require("./request.model");
+const User = require("../user/user.model");
 
 // import middlewares
 const authenticate = require("../middlewares/auth");

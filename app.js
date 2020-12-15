@@ -9,9 +9,9 @@ const passport = require("passport");
 
 // import routes
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var departmentsRouter = require("./routes/departments");
-var requestsRouter = require("./routes/requests");
+var usersRouter = require("./user/users");
+var departmentsRouter = require("./department/departments");
+var requestsRouter = require("./request/requests");
 
 var app = express();
 

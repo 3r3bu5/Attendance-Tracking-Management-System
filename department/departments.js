@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 // import Department model
-const Department = require("../models/departmentModel");
-const User = require("../models/userModel");
+const Department = require("../department/department.model");
+const User = require("../user/user.model");
 
 // import middlewares
 const authenticate = require("../middlewares/auth");
