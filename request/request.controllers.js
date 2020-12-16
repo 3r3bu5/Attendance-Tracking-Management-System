@@ -1,6 +1,7 @@
 const express = require("express");
 const Request = require("./request.model");
 const User = require("../user/user.model");
+const { request } = require("express");
 
 exports.methodNotallowed = (req, res) => {
   res.status(405);
@@ -58,18 +59,75 @@ exports.getAll = (req, res, next) => {
 };
 
 exports.createOne = (req, res, next) => {
-  Request.create({
-    requestedBy: req.user._id,
-    departmentId: req.user.department,
-    reason: req.body.reason,
-    date: Date.now(),
-  })
-    .then((request) => {
+  /* 
+     1- check if user's checked in for today 
+     if true:
+      2- get the user's request  
+        * if user has no request for today => create one
+        * if there is request for today => just notify him
+     if not:
+        * Notify this motherhacker
+ 
+  */
+
+  if (req.user.attendance && req.user.attendance.length > 0) {
+    createRequest = Request.create({
+      requestedBy: req.user._id,
+      departmentId: req.user.department,
+      reason: req.body.reason,
+      date: Date.now(),
+    })
+      .then((request) => {
+        res.status(200);
+        res.setHeader("content-type", "application/json");
+        res.json({ message: "Request has been sent successfully ", request });
+      })
+      .catch((err) => next(err));
+
+    const lastAttendance = req.user.attendance[req.user.attendance.length - 1];
+    const lastAttendanceEntryTimestamp = lastAttendance.entry.getTime();
+    if (lastAttendance.exit.time) {
       res.status(200);
       res.setHeader("content-type", "application/json");
-      res.json({ message: "Request has been sent successfully ", request });
-    })
-    .catch((err) => next(err));
+      res.json({
+        message:
+          "You are already signed out for today! or haven't signed in yet!",
+      });
+    } else {
+      Request.find()
+        .sort({ age: -1 })
+        .limit(1) // to get the last request of the user
+        .then((request) => {
+          if (request == null) {
+            createRequest;
+          } else {
+            console.log(request);
+            currentDate = new Date();
+            lastRequestTimeStamp = request[0].date.getTime();
+            const nextCheckIn = new Date(lastRequestTimeStamp);
+            nextCheckIn.setHours(nextCheckIn.getHours() + 24);
+            if (currentDate.getTime() >= nextCheckIn.getTime()) {
+              createRequest;
+            } else {
+              res.status(200);
+              res.setHeader("content-type", "application/json");
+              res.json({
+                message:
+                  "You have already applied for a leaving request for today",
+                request,
+              });
+            }
+          }
+        })
+        .catch((err) => next(err));
+    }
+  } else {
+    res.status(400);
+    res.setHeader("content-type", "application/json");
+    res.json({
+      message: "You have no attendance entry, try checkin first",
+    });
+  }
 };
 
 exports.deleteAll = (req, res, next) => {

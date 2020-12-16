@@ -32,7 +32,7 @@
   - [x] Add default department for admins user
   - ~~[ ] Add default department for users who are not assigned to any~~. (decided to remove it since you cant add users who can't be assigned to any department I think!)
   - [x] Add Endpoint to list all users who are heads of departments
-  - [ ] Add restrictions for leaving requests
+  - [x] Add restrictions for leaving requests
   - [ ] Design validation for all endpoints
   - [ ] Add tests for the endpoints
   - [x] Add upload router to handle user's images
