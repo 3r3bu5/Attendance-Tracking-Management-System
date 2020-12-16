@@ -12,6 +12,10 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./user/users");
 var departmentsRouter = require("./department/departments");
 var requestsRouter = require("./request/requests");
+var attendanceRouter = require("./attendance/attendance");
+
+// import helpers
+const AttendanceCron = require("./attendance/attendanceCron");
 
 var app = express();
 
@@ -43,10 +47,15 @@ app.use("/", indexRouter);
 app.use("/departments", departmentsRouter);
 app.use("/users", usersRouter);
 app.use("/requests", requestsRouter);
+app.use("/history", attendanceRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
+
+// run cronjob to get the full attendance at the end of every day
+AttendanceCron.start();
 
 // error handler
 app.use(function (err, req, res, next) {

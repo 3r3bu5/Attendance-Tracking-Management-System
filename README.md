@@ -24,7 +24,7 @@
   - [x] Add the (avaliable users at the moment) endpoint
         Admins: to list all the avaliable employees,
         Head of the department: to list all the avaliable employees of this department
-  - [ ] Final attendance log and count the absence days of the employess
+  - [x] Final attendance log and count the absence days of the employess
 
 - Extras
 

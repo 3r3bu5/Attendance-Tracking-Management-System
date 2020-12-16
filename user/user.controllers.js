@@ -127,6 +127,7 @@ exports.createDefaultAdmin = (req, res, next) => {
             email: config.adminEmail,
             name: config.adminName,
             age: config.adminAge,
+            avaliable: true,
             isAdmin: true,
           }),
           config.adminPass,
