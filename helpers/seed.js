@@ -50,10 +50,10 @@ mongoose.set("useCreateIndex", true);
 var seed = headOfDep(deps, users);
 
 // Reset collections
-Department.deleteMany({})
+Department.deleteMany({ name: !"Admins" }) // to not drop the admins department
   .exec()
   .then(function () {
-    User.deleteMany({ isAdmin: false }).exec();
+    User.deleteMany({ isAdmin: false }).exec(); // to not drop the admins users
     return Request.deleteMany({});
   })
   // Seed

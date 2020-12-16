@@ -122,36 +122,52 @@ exports.createDefaultAdmin = (req, res, next) => {
         res.setHeader("Content-Type", "application/json");
         res.json({ message: "Already there :)" });
       } else {
-        User.register(
-          new User({
-            email: config.adminEmail,
-            name: config.adminName,
-            age: config.adminAge,
-            avaliable: true,
-            isAdmin: true,
-          }),
-          config.adminPass,
-          (err, user) => {
-            if (err) {
-              res.statusCode = 500;
-              res.setHeader("Content-Type", "application/json");
-              res.json({ err: err });
-            } else {
-              user.save((err, user) => {
+        Department.create({
+          name: "Admins",
+          abbr: "Adm",
+        })
+          .then((department) => {
+            User.register(
+              new User({
+                email: config.adminEmail,
+                name: config.adminName,
+                age: config.adminAge,
+                gender: config.adminGender,
+                department: department._id,
+                position: "Admin",
+                headOfDepartmentId: department._id,
+                avaliable: true,
+                isAdmin: true,
+              }),
+              config.adminPass,
+              (err, user) => {
                 if (err) {
                   res.statusCode = 500;
                   res.setHeader("Content-Type", "application/json");
                   res.json({ err: err });
-                  return;
+                } else {
+                  user.save((err, user) => {
+                    if (err) {
+                      res.statusCode = 500;
+                      res.setHeader("Content-Type", "application/json");
+                      res.json({ err: err });
+                      return;
+                    }
+                    department.depHead = user._id;
+                    department
+                      .save()
+                      .then((department) => {
+                        res.statusCode = 200;
+                        res.setHeader("Content-Type", "application/json");
+                        res.json({ success: true, status: " Intiliazed!" });
+                      })
+                      .catch((err) => next(err));
+                  });
                 }
-
-                res.statusCode = 200;
-                res.setHeader("Content-Type", "application/json");
-                res.json({ success: true, status: " Intiliazed!" });
-              });
-            }
-          }
-        );
+              }
+            );
+          })
+          .catch((err) => next(err));
       }
     })
     .catch((err) => next(err));

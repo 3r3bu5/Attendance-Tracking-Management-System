@@ -28,7 +28,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
     },
     department: {
-      default: "0",
       type: mongoose.Schema.Types.String,
       ref: "Department",
     },

@@ -3,6 +3,7 @@ module.exports = {
   JWTsecret: "", // JWTSecret                           type: String
   adminEmail: "", // Default admin email                 type: String
   adminAge: 0, // Default admin Age                   type: Number
+  adminGender: 1, // 1- male   2- female 3- other    type: Number
   adminPass: "", // Default admin Password              type: String
   adminName: "", // Default admin Name                  type: String
   startinghour: 09, // startinghour of the day (remember to use 2 digits ex: if the starting hour is 9 use 09 NOT 9)   type: Number

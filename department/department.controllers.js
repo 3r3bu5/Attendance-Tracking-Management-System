@@ -151,6 +151,7 @@ exports.assignHeadOfDepartment = (req, res, next) => {
             User.findById(req.body.depHead).then((user) => {
               if (user != null) {
                 user.headOfDepartmentId = req.params.depId;
+                user.department = req.params.depId;
                 user
                   .save()
                   .then((user) => {
