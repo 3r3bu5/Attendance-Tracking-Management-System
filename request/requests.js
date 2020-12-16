@@ -1,50 +1,66 @@
 var express = require("express");
 var router = express.Router();
 
-// import Request & User model
-const Request = require("./request.model");
-const User = require("../user/user.model");
-
 // import middlewares
 const authenticate = require("../middlewares/auth");
 const passport = require("passport");
 
 // import controllers
-controller = require("./request.controllers");
+const controller = require("./request.controllers");
+const cors = require("../middlewares/cors");
 
-router.get("/", authenticate.verifyUser, controller.getAll);
+router
+  .route("/")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.status(200);
+  })
 
-router.post("/", authenticate.verifyUser, controller.createOne);
+  .get(cors.cors, authenticate.verifyUser, controller.getAll)
 
-router.put(
-  "/",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.methodNotallowed
-);
-router.delete(
-  "/",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.deleteAll
-);
+  .post(cors.corsWithOptions, authenticate.verifyUser, controller.createOne)
 
-router.get("/:reqId", authenticate.verifyUser, controller.getOne);
+  .put(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.methodNotallowed
+  )
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.deleteAll
+  );
 
-router.put("/:reqId", authenticate.verifyUser, controller.editOne);
+router
+  .route("/:reqId")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .get(cors.cors, authenticate.verifyUser, controller.getOne)
+  .put(cors.corsWithOptions, authenticate.verifyUser, controller.editOne)
+  .delete(cors.corsWithOptions, authenticate.verifyUser, controller.deleteOne);
 
-router.delete("/:reqId", authenticate.verifyUser, controller.deleteOne);
+router
+  .route("/:reqId/accept")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .post(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    controller.acceptRequest
+  );
 
-router.post(
-  "/:reqId/accept",
-  authenticate.verifyUser,
-  controller.acceptRequest
-);
-
-router.post(
-  "/:reqId/refuse",
-  authenticate.verifyUser,
-  controller.refuseRequest
-);
+router
+  .route("/:reqId/refuse")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .post(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    controller.refuseRequest
+  );
 
 module.exports = router;

@@ -38,9 +38,9 @@
   - [x] Add upload router to handle user's images
   - [x] Seprate every endpoint to controller
   - [x] Extract all changeable configuration (statringWorkHour, Minutesdelayallowence,..) from code to the config file
-  - [ ] CORS
+  - [x] CORS
   - [x] Add HelmetJs to provide basic security headers
-  - [ ] Use HTTPS over HTTP
+  - [x] Use HTTPS over HTTP
   - [ ] Publish the 1.1 v1 of the API on Swagger
 
 - View based requirments (Maybe I will do it maybe not)

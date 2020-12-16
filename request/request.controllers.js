@@ -62,7 +62,7 @@ exports.createOne = (req, res, next) => {
   /* 
      1- check if user's checked in for today 
      if true:
-      2- get the user's request  
+      2- get the user's last request  
         * if user has no request for today => create one
         * if there is request for today => just notify him
      if not:
@@ -71,18 +71,20 @@ exports.createOne = (req, res, next) => {
   */
 
   if (req.user.attendance && req.user.attendance.length > 0) {
-    createRequest = Request.create({
-      requestedBy: req.user._id,
-      departmentId: req.user.department,
-      reason: req.body.reason,
-      date: Date.now(),
-    })
-      .then((request) => {
-        res.status(200);
-        res.setHeader("content-type", "application/json");
-        res.json({ message: "Request has been sent successfully ", request });
+    createRequest = () => {
+      Request.create({
+        requestedBy: req.user._id,
+        departmentId: req.user.department,
+        reason: req.body.reason,
+        date: Date.now(),
       })
-      .catch((err) => next(err));
+        .then((request) => {
+          res.status(200);
+          res.setHeader("content-type", "application/json");
+          res.json({ message: "Request has been sent successfully ", request });
+        })
+        .catch((err) => next(err));
+    };
 
     const lastAttendance = req.user.attendance[req.user.attendance.length - 1];
     const lastAttendanceEntryTimestamp = lastAttendance.entry.getTime();
@@ -98,16 +100,16 @@ exports.createOne = (req, res, next) => {
         .sort({ age: -1 })
         .limit(1) // to get the last request of the user
         .then((request) => {
-          if (request == null) {
-            createRequest;
+          if (request.length == []) {
+            createRequest();
           } else {
-            console.log(request);
             currentDate = new Date();
             lastRequestTimeStamp = request[0].date.getTime();
             const nextCheckIn = new Date(lastRequestTimeStamp);
             nextCheckIn.setHours(nextCheckIn.getHours() + 24);
+
             if (currentDate.getTime() >= nextCheckIn.getTime()) {
-              createRequest;
+              createRequest();
             } else {
               res.status(200);
               res.setHeader("content-type", "application/json");

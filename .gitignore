@@ -67,5 +67,8 @@ typings/
 config.js
 
 # public folder
-
 public/images
+
+# private
+*.key
+*.cert

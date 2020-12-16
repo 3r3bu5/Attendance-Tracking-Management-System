@@ -6,57 +6,68 @@ const authenticate = require("../middlewares/auth");
 
 // import controller
 const controller = require("./attendance.controllers");
+const cors = require("../middlewares/cors");
 
-router.get(
-  "/",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.getAll
-);
+router
+  .route("/")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .get(
+    cors.cors,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.getAll
+  )
 
-router.post(
-  "/",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.methodNotallowed
-);
-router.put(
-  "/",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.methodNotallowed
-);
-router.delete(
-  "/",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.deleteAll
-);
+  .post(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.methodNotallowed
+  )
+  .put(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.methodNotallowed
+  )
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.deleteAll
+  );
 
-router.get(
-  "/:attId",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.getOne
-);
+router
+  .route("/:attId")
+  .options(cors.corsWithOptions, (req, res) => {
+    res.status(200);
+  })
+  .get(
+    cors.cors,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.getOne
+  )
 
-router.post(
-  "/:attId",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.methodNotallowed
-);
-router.put(
-  "/:attId",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.methodNotallowed
-);
-router.delete(
-  "/:attId",
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.deleteOne
-);
+  .post(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.methodNotallowed
+  )
+  .put(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.methodNotallowed
+  )
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.deleteOne
+  );
 
 module.exports = router;
