@@ -31,7 +31,7 @@
   - [x] Seed dummy data into the db for further and better testing~~
   - [ ] Add default department for admins user
   - [ ] Add default department for users who are not assigned to any
-  - [ ] Add Endpoint to list all users who are heads of departments
+  - [x] Add Endpoint to list all users who are heads of departments
   - [ ] Add restrictions for leaving requests
   - [ ] Design validation for all endpoints
   - [x] Add upload router to handle user's images

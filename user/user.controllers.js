@@ -544,3 +544,19 @@ exports.deleteOne = (req, res, next) => {
     })
     .catch((err) => next(err));
 };
+
+exports.listAllDepartmentsHead = (req, res, next) => {
+  User.find({ headOfDepartmentId: { $gte: 0 } })
+    .then((users) => {
+      if (users != null) {
+        res.status(200);
+        res.setHeader("content-type", "application/json");
+        res.json({ message: `There are ${users.length} Heads`, users });
+      } else {
+        res.status(200);
+        res.setHeader("Content-Type", "application/json");
+        res.json({ message: "No heads yet!" });
+      }
+    })
+    .catch((err) => next(err));
+};

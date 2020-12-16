@@ -43,6 +43,13 @@ router.post("/enter", authenticate.verifyUser, controller.userCheckIn);
 
 router.post("/leave", authenticate.verifyUser, controller.userCheckOut);
 
+router.post(
+  "/head",
+  authenticate.verifyUser,
+  authenticate.verifyAdmin,
+  controller.listAllDepartmentsHead
+);
+
 router.get("/:userId", authenticate.verifyUser, controller.getOne);
 
 router.post(
@@ -59,5 +66,4 @@ router.delete(
   authenticate.verifyAdmin,
   controller.deleteOne
 );
-
 module.exports = router;
