@@ -27,7 +27,7 @@
 
 - Extras
 
-  - Seed dummy data into the db for further and better testing
+  - ~~Seed dummy data into the db for further and better testing~~
   - Add default department for admins user
   - Add default department for users who are not assigned to any
   - Add restrictions for leaving requests

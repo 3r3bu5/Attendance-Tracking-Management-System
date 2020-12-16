@@ -20,8 +20,9 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
     gender: {
-      type: String,
-      enum: ["male", "female", "other"],
+      type: Number,
+      min: 1, //  1- male   2- female 3- other
+      max: 3,
     },
     position: {
       type: String,
@@ -36,7 +37,6 @@ const UserSchema = new mongoose.Schema(
       default: false,
     },
     headOfDepartmentId: {
-      unique: true,
       type: mongoose.Schema.Types.String,
       ref: "Department",
     },
