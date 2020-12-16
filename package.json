@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon ./bin/www",
     "pretty": "prettier -w ..\\ATMS\\",
-    "seed" : "node .\\helpers\\seed.js"
+    "seed": "node .\\helpers\\seed.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

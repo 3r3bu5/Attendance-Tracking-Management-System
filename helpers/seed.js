@@ -63,15 +63,14 @@ Department.deleteMany({})
         User.create(seed.users)
           .then((users) => {
             console.log("Seeded successfully");
-            mongoose.disconnect()
-            .then(() => {
-                console.log("Disconnect successfully, Have fun")
-
-            })
-            .catch((err) => {
-              console.log("There was an error while disconnect from the DB!")
-            })
-
+            mongoose
+              .disconnect()
+              .then(() => {
+                console.log("Disconnect successfully, Have fun");
+              })
+              .catch((err) => {
+                console.log("There was an error while disconnect from the DB!");
+              });
           })
           .catch((err) => {
             console.log(err);

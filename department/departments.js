@@ -9,227 +9,61 @@ const User = require("../user/user.model");
 const authenticate = require("../middlewares/auth");
 const passport = require("passport");
 
-/*
-@Route      >    METHOD /departments
-@Behavioure >    Return all departments / 
-                 POST a new department / 
-                 Delete all departments
-@Access     >    Admin for listing departments /
-                 Admin to POST a new department /
-                 Admin to DELETE all departments
-*/
+// import controller
+const controller = require("./department.controllers");
 
 router.get(
   "/",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    // only admin can list all departments
-    Department.find()
-      .populate("depHead", "_id name email avaliable")
-      .then((departments) => {
-        res.status(200);
-        res.setHeader("content-type", "application/json");
-        res.json(departments);
-      })
-      .catch((err) => next(err));
-  }
+  controller.getAll
 );
 
 router.post(
   "/",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    // only admin can post  a new department
-    Department.create(req.body)
-      .then((departments) => {
-        res.status(200);
-        res.setHeader("content-type", "application/json");
-        res.json({ message: "Department created successfully ", departments });
-      })
-      .catch((err) => next(err));
-  }
+  controller.createOne
 );
 router.put(
   "/",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    res.status(405);
-    res.setHeader("content-type", "application/json");
-    res.json({ message: "METHOD is not allowed" });
-  }
+  controller.methodNotallowed
 );
 router.delete(
   "/",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    // only admin can delete all departments
-    Department.deleteMany({})
-      .then((department) => {
-        res.setHeader("content-type", "application/json");
-        res.json({ message: "All Department have been deleted successfully " });
-      })
-      .catch((err) => next(err));
-  }
+  controller.deleteAll
 );
 
-/*
-@Route      >    METHOD /departments/:depId
-@Behavioure >    Return a specific department / 
-                 Edit a specific department / 
-                 Delete a specific department
-@Access     >    Admin || department head for listing department /
-                 Admin to EDIT a new department /
-                 Admin to DELETE a specific departments
-*/
-
-router.get("/:depId", authenticate.verifyUser, (req, res, next) => {
-  // admin can list all departments
-  // also the department head can access only his department information
-  Department.findById(req.params.depId)
-    .populate("depHead", "_id name email avaliable")
-    .then((department) => {
-      if (department != null) {
-        console.log(req.user._id, department.depHead);
-        if (
-          (department.depHead != null &&
-            req.user._id == department.depHead._id) ||
-          req.user.isAdmin == true
-        ) {
-          // check if the logged-in user is the head of this department
-          res.status(200);
-          res.setHeader("content-type", "application/json");
-          res.json(department);
-        } else {
-          res.status(401);
-          res.setHeader("content-type", "application/json");
-          res.json({
-            message: "You are not allowed to see this dep's information",
-          });
-        }
-      } else {
-        err = new Error("Department doesn't exists");
-        err.statusCode = 404;
-        return next(err);
-      }
-    })
-    .catch((err) => next(err));
-});
+router.get("/:depId", authenticate.verifyUser, controller.getOne);
 
 router.post(
   "/:depId",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    res.status(405);
-    res.setHeader("content-type", "application/json");
-    res.json({ message: "METHOD is not allowed" });
-  }
+  controller.methodNotallowed
 );
 router.put(
   "/:depId",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    Department.findById(req.params.depId)
-      .then((department) => {
-        if (req.body.name) {
-          department.name = req.body.name;
-        }
-        if (req.body.abbr) {
-          department.abbr = req.body.abbr;
-        }
-        if (req.body.depHead) {
-          department.depHead = req.body.depHead;
-        }
-        department
-          .save()
-          .then((department) => {
-            res.status(200);
-            res.setHeader("Content-Type", "application/json");
-            res.json({
-              message: "Department has been edited successfully",
-              department,
-            });
-          })
-          .catch((err) => next(err));
-      })
-      .catch((err) => next(err));
-  }
+  controller.editOne
 );
 router.delete(
   "/:depId",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    Department.findByIdAndRemove(req.params.depId)
-      .then((department) => {
-        if (department != null) {
-          res.status(200);
-          res.setHeader("content-type", "application/json");
-          res.json({ message: "Deleted successfully" });
-        } else {
-          err = new Error("Department doesn't exists");
-          err.statusCode = 404;
-          return next(err);
-        }
-      })
-      .catch((err) => next(err));
-  }
+  controller.deleteOne
 );
-
-// assign department head
 
 router.post(
   "/:depId/assign",
   authenticate.verifyUser,
   authenticate.verifyAdmin,
-  (req, res, next) => {
-    Department.findById(req.params.depId)
-      .then((department) => {
-        if (department != null) {
-          department.depHead = req.body.depHead;
-          department
-            .save()
-            .then((department) => {
-              User.findById(req.body.depHead).then((user) => {
-                if (user != null) {
-                  user.headOfDepartmentId = req.params.depId;
-                  user
-                    .save()
-                    .then((user) => {
-                      console.log(user);
-                      res.status(200);
-                      res.setHeader("content-type", "application/json");
-                      res.json({
-                        message:
-                          "Department's head assigned successfully successfully",
-                      });
-                    })
-                    .catch((err) => next(err));
-                } else {
-                  res.status(404);
-                  res.setHeader("content-type", "application/json");
-                  res.json({
-                    message: "User doesn't exist",
-                  });
-                }
-              });
-            })
-            .catch((err) => next(err))
-
-            .catch((err) => next(err));
-        } else {
-          err = new Error("Department doesn't exists");
-          err.statusCode = 404;
-          return next(err);
-        }
-      })
-      .catch((err) => next(err));
-  }
+  controller.assignHeadOfDepartment
 );
 
 module.exports = router;

@@ -1,44 +1,45 @@
 ## To do
 
 - Departments
-  - ~~Router~~
-  - ~~Model~~
-  - Controllers
+  - [x] Route
+  - [x] Model
+  - [x] Controllers
 - Users
-  - ~~Router~~
-  - ~~Model~~
-  - Controllers
+  - [x] Route
+  - [x] Model
+  - [x] Controllers
 - Requests
 
-  - ~~Router~~
-  - ~~Model~~
-  - Controllers
+  - [x] Route
+  - [x] Model
+  - [x] Controllers
 
 - Auth
 
-  - ~~Local logIn/Register~~
-  - ~~Implement authorization and access control~~
+  - [x] Local logIn/Register
+  - [x] Implement authorization and access control
 
 - Requirment based changes
 
-  - ~~Add the (avaliable users at the moment) endpoint
-    Admins: to list all the avaliable employees,
-    Head of the department: to list all the avaliable employees of this department~~
+  - [x] Add the (avaliable users at the moment) endpoint
+        Admins: to list all the avaliable employees,
+        Head of the department: to list all the avaliable employees of this department
+  - [ ] Final attendance log and count the absence days of the employess
 
 - Extras
 
-  - ~~Seed dummy data into the db for further and better testing~~
-  - Add default department for admins user
-  - Add default department for users who are not assigned to any
-  - Add restrictions for leaving requests
-  - Design validation for all endpoints
-  - Add upload router to handle user's images
-  - Seprate every endpoint to controller
-  - Extract all changeable configuration (statringWorkHour, Minutesdelayallowence,..) from code to the config file
-  - CORS
-  - Use HTTPS over HTTP
-  - Publish the 1.1 v1 of the API on Swagger
+  - [x] Seed dummy data into the db for further and better testing~~
+  - [ ] Add default department for admins user
+  - [ ] Add default department for users who are not assigned to any
+  - [ ] Add restrictions for leaving requests
+  - [ ] Design validation for all endpoints
+  - [ ] Add upload router to handle user's images
+  - [x] Seprate every endpoint to controller
+  - [x] Extract all changeable configuration (statringWorkHour, Minutesdelayallowence,..) from code to the config file
+  - [ ] CORS
+  - [ ] Use HTTPS over HTTP
+  - [ ] Publish the 1.1 v1 of the API on Swagger
 
 - View based requirments (Maybe I will do it maybe not)
-  - Notification subsystem to the leaving requests
-  - Track availability during the day
+  - [ ] Notification subsystem to the leaving requests
+  - [ ] Track availability during the day
