@@ -60,7 +60,12 @@ typings/
 .env
 .vscode/
 
+
 # next.js build output
 .next
 *.rest
 config.js
+
+# public folder
+
+public/images

@@ -6,6 +6,7 @@ var logger = require("morgan");
 var config = require("./config");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const helmet = require("helmet");
 
 // import routes
 var indexRouter = require("./routes/index");
@@ -13,11 +14,13 @@ var usersRouter = require("./user/users");
 var departmentsRouter = require("./department/departments");
 var requestsRouter = require("./request/requests");
 var attendanceRouter = require("./attendance/attendance");
+var uploadRouter = require("./upload/upload");
 
 // import helpers
 const AttendanceCron = require("./attendance/attendanceCron");
 
 var app = express();
+app.use(helmet());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -48,6 +51,7 @@ app.use("/departments", departmentsRouter);
 app.use("/users", usersRouter);
 app.use("/requests", requestsRouter);
 app.use("/history", attendanceRouter);
+app.use("/upload", uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

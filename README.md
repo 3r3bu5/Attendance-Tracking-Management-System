@@ -31,12 +31,14 @@
   - [x] Seed dummy data into the db for further and better testing~~
   - [ ] Add default department for admins user
   - [ ] Add default department for users who are not assigned to any
+  - [ ] Add Endpoint to list all users who are heads of departments
   - [ ] Add restrictions for leaving requests
   - [ ] Design validation for all endpoints
-  - [ ] Add upload router to handle user's images
+  - [x] Add upload router to handle user's images
   - [x] Seprate every endpoint to controller
   - [x] Extract all changeable configuration (statringWorkHour, Minutesdelayallowence,..) from code to the config file
   - [ ] CORS
+  - [x] Add HelmetJs to provide basic security headers
   - [ ] Use HTTPS over HTTP
   - [ ] Publish the 1.1 v1 of the API on Swagger
 
