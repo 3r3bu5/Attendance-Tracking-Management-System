@@ -8,6 +8,9 @@ const passport = require("passport");
 const authenticate = require("../middlewares/auth");
 const cors = require("../middlewares/cors");
 
+// import validation
+const userValidation = require("./user.validation");
+
 router
   .route("/")
   .options(cors.corsWithOptions, (req, res) => {
@@ -42,6 +45,7 @@ router
     cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
+    userValidation,
     controller.registerNewUser
   );
 
@@ -52,6 +56,7 @@ router
   })
   .post(
     cors.corsWithOptions,
+    userValidation,
     passport.authenticate("local"),
     controller.loginUser
   );
@@ -105,6 +110,7 @@ router
     cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
+    userValidation,
     controller.assignUsertoDepartment
   );
 
@@ -113,13 +119,18 @@ router
   .options(cors.corsWithOptions, (req, res) => {
     res.status(200);
   })
-  .get(cors.cors, authenticate.verifyUser, controller.getOne);
-router.put(cors.corsWithOptions, authenticate.verifyUser, controller.editOne);
-router.delete(
-  cors.corsWithOptions,
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.deleteOne
-);
+  .get(cors.cors, authenticate.verifyUser, controller.getOne)
+  .put(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    userValidation,
+    controller.editOne
+  )
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.deleteOne
+  );
 
 module.exports = router;

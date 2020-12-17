@@ -11,6 +11,9 @@ const cors = require("../middlewares/cors");
 // import controller
 const controller = require("./department.controllers");
 
+// import validation
+const departmentValidation = require("./department.validation");
+
 router
   .route("/")
 
@@ -27,6 +30,7 @@ router
     cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
+    departmentValidation,
     controller.createOne
   )
   .put(
@@ -48,26 +52,27 @@ router
   .options(cors.corsWithOptions, (req, res) => {
     res.status(200);
   })
-  .get(cors.cors, authenticate.verifyUser, controller.getOne);
+  .get(cors.cors, authenticate.verifyUser, controller.getOne)
 
-router.post(
-  cors.corsWithOptions,
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.methodNotallowed
-);
-router.put(
-  cors.corsWithOptions,
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.editOne
-);
-router.delete(
-  cors.corsWithOptions,
-  authenticate.verifyUser,
-  authenticate.verifyAdmin,
-  controller.deleteOne
-);
+  .post(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.methodNotallowed
+  )
+  .put(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    departmentValidation,
+    controller.editOne
+  )
+  .delete(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    controller.deleteOne
+  );
 
 router
   .route("/:depId/assign")
@@ -78,6 +83,7 @@ router
     cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
+    departmentValidation,
     controller.assignHeadOfDepartment
   );
 

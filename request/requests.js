@@ -9,6 +9,10 @@ const passport = require("passport");
 const controller = require("./request.controllers");
 const cors = require("../middlewares/cors");
 
+// import validation
+
+const requestValidation = require("./request.validation");
+
 router
   .route("/")
   .options(cors.corsWithOptions, (req, res) => {
@@ -17,7 +21,12 @@ router
 
   .get(cors.cors, authenticate.verifyUser, controller.getAll)
 
-  .post(cors.corsWithOptions, authenticate.verifyUser, controller.createOne)
+  .post(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    requestValidation,
+    controller.createOne
+  )
 
   .put(
     cors.corsWithOptions,
@@ -38,7 +47,12 @@ router
     res.status(200);
   })
   .get(cors.cors, authenticate.verifyUser, controller.getOne)
-  .put(cors.corsWithOptions, authenticate.verifyUser, controller.editOne)
+  .put(
+    cors.corsWithOptions,
+    authenticate.verifyUser,
+    requestValidation,
+    controller.editOne
+  )
   .delete(cors.corsWithOptions, authenticate.verifyUser, controller.deleteOne);
 
 router
