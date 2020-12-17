@@ -58,9 +58,9 @@ Department.deleteMany({ name: { $ne: "Admins" } }) //  not drop the admins depar
   })
   // Seed
   .then(function () {
-    Department.create(seed.deps)
+    Department.insertMany(seed.deps)
       .then((deps) => {
-        User.create(seed.users)
+        User.insertMany(seed.users)
           .then((users) => {
             console.log("Seeded successfully");
             mongoose
