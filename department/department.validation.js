@@ -7,18 +7,16 @@ function departmentValidation(req, res, next) {
   // nameOfController : assignHeadOfDepartment
   if (req.method === "POST" && req.params.depId) {
     schema = Joi.object({
-      depHead: Joi.string().min(6).max(30).required(),
+      depHead: Joi.string().min(36).max(36).required(),
     });
   }
 
   // Schema for creating new department endpoint
   // nameOfController : createOne
   else if (req.method === "POST") {
-    console.log("1");
 
     schema = Joi.object({
       name: Joi.string().min(6).max(30).required(),
-
       abbr: Joi.string().min(2).max(9).required(),
     });
   }

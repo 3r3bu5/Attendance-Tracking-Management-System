@@ -5,6 +5,7 @@ const userSeed = require("../user/user.seed");
 var config = require("../config");
 const User = require("../user/user.model");
 const Request = require("../request/request.model");
+const Attendance = require("../attendance/attendance.model");
 const Department = require("../department/department.model");
 const { v4: uuidv4 } = require("uuid");
 
@@ -53,8 +54,13 @@ var seed = headOfDep(deps, users);
 Department.deleteMany({ name: { $ne: "Admins" } }) //  not drop the admins department
   .exec()
   .then(function () {
-    User.deleteMany({ isAdmin: false }).exec(); //  not drop the admins users
-    return Request.deleteMany({});
+    User.deleteMany({ isAdmin: false })
+      .exec() //  not drop the admins users
+      .then(() => {
+        Attendance.deleteMany({}).then(() => {
+          return Request.deleteMany({});
+        });
+      });
   })
   // Seed
   .then(function () {

@@ -10,6 +10,7 @@ const DepSchema = new mongoose.Schema(
     abbr: {
       type: String,
       unique: true,
+      required: true,
     },
     depHead: {
       type: mongoose.Schema.Types.String,

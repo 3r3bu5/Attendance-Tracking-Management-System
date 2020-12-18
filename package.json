@@ -17,7 +17,6 @@
     "express": "~4.16.1",
     "helmet": "^4.2.0",
     "http-errors": "~1.6.3",
-    "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.5",
     "morgan": "~1.9.1",
@@ -33,6 +32,7 @@
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
     "faker": "^5.1.0",
+    "joi": "^17.3.0",
     "nodemon": "^2.0.6",
     "prettier": "^2.1.2"
   }

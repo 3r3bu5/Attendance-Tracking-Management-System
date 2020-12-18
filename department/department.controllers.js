@@ -35,7 +35,7 @@ exports.createOne = (req, res, next) => {
   // only admin can post  a new department
   Department.create(req.body)
     .then((departments) => {
-      res.status(200);
+      res.status(201);
       res.setHeader("content-type", "application/json");
       res.json({ message: "Department created successfully ", departments });
     })
@@ -160,7 +160,7 @@ exports.assignHeadOfDepartment = (req, res, next) => {
                     res.setHeader("content-type", "application/json");
                     res.json({
                       message:
-                        "Department's head assigned successfully successfully",
+                        "Department's head assigned successfully successfully",department
                     });
                   })
                   .catch((err) => next(err));

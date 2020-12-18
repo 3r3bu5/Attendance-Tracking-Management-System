@@ -26,6 +26,7 @@ const UserSchema = new mongoose.Schema(
     },
     position: {
       type: String,
+      required: true,
     },
     department: {
       type: mongoose.Schema.Types.String,
@@ -44,6 +45,7 @@ const UserSchema = new mongoose.Schema(
     },
     avaliable: {
       type: Boolean,
+      default:false
     },
     absenceDays: {
       type: Number,

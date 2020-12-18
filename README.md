@@ -41,7 +41,7 @@
   - [x] CORS
   - [x] Add HelmetJs to provide basic security headers
   - [x] Use HTTPS over HTTP
-  - [ ] Publish the 1.1 v1 of the API on Swagger
+  - [x] Publish the 1.1 v1 of the API on Swagger
 
 - View based requirments (Maybe I will do it maybe not)
   - [ ] Notification subsystem to the leaving requests

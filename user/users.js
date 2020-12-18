@@ -69,7 +69,7 @@ router
   .post(cors.corsWithOptions, controller.createDefaultAdmin);
 
 router
-  .post("/avaliable")
+  .route("/avaliable")
   .options(cors.corsWithOptions, (req, res) => {
     res.status(200);
   })
@@ -94,7 +94,7 @@ router
   .options(cors.corsWithOptions, (req, res) => {
     res.status(200);
   })
-  .post(
+  .get(
     cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,

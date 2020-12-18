@@ -57,8 +57,8 @@ exports.deleteAll = (req, res, next) => {
 /* 
 
 @Route      >    POST /users/register  /login
-@Behavioure >    Register a employee / 
-                 login as a employee / 
+@Behavioure >    Register an employee / 
+                 login as an employee / 
                  
 @Access     >    Admin for registering new users /
                  employee to login /
@@ -118,7 +118,7 @@ exports.createDefaultAdmin = (req, res, next) => {
     .then((user) => {
       console.log(user);
       if (user != null) {
-        res.status(200);
+        res.status(406);
         res.setHeader("Content-Type", "application/json");
         res.json({ message: "Already there :)" });
       } else {
@@ -142,13 +142,13 @@ exports.createDefaultAdmin = (req, res, next) => {
               config.adminPass,
               (err, user) => {
                 if (err) {
-                  res.statusCode = 500;
+                  res.status = 500;
                   res.setHeader("Content-Type", "application/json");
                   res.json({ err: err });
                 } else {
                   user.save((err, user) => {
                     if (err) {
-                      res.statusCode = 500;
+                      res.status = 500;
                       res.setHeader("Content-Type", "application/json");
                       res.json({ err: err });
                       return;
@@ -175,8 +175,8 @@ exports.createDefaultAdmin = (req, res, next) => {
 
 /*
 @Route      >    METHOD /avaliable
-@Behavioure >    List all avaliable employees at the moment  / 
-                 List all avaliable employees in a specific department at the moment / 
+@Behavioure >    List all currently avaliable employees  / 
+                 List all currently avaliable employees in a specific department / 
                  
 @Access     >   For admins: to list all the avaliable employees
                 For head of the department: to list all the avaliable employees of this department
@@ -231,7 +231,6 @@ exports.userCheckIn = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user != null) {
-        console.log(req.user);
         if (req.user._id == user._id) {
           const data = {
             entry: Date.now(), // save current time as check-in entry
@@ -266,7 +265,7 @@ exports.userCheckIn = (req, res, next) => {
               // if 24 hrs passed from his last entry
 
               if (
-                currentHour === startinghour &&
+                currentHour == startinghour &&
                 currentMinutes <= allowanceminutes
               ) {
                 user.attendance.push(data);
@@ -424,7 +423,7 @@ exports.userCheckOut = (req, res, next) => {
 @Behavioure >    Return a specific user / 
                  Edit a specific user / 
                  Delete a specific user
-@Access     >    Admin for listing user /
+@Access     >    Admin || department head for listing user /
                  Admin to EDIT a new user /
                  Admin to DELETE a specific user
 */
@@ -440,29 +439,30 @@ exports.getOne = (req, res, next) => {
     })
     .then((user) => {
       if (user != null) {
-        if (user.department != null) {
-          if (
-            req.user._id == user._id ||
-            req.user._id == user.department.depHead._id ||
-            req.user.isAdmin == true
-          ) {
-            res.status(200);
-            res.setHeader("content-type", "application/json");
-            res.json(user);
-          } else {
+
+        if (req.user.isAdmin == true ){
+          res.status(200);
+          res.setHeader("content-type", "application/json");
+          res.json(user);
+
+        } else if  (user.department != null && req.user._id == user.department.depHead._id ) {
+          res.status(200);
+          res.setHeader("content-type", "application/json");
+          res.json(user);
+        }
+
+        else if (req.user._id == user._id ) {
+          res.status(200);
+          res.setHeader("content-type", "application/json");
+          res.json(user);
+        }
+        else {
             res.status(401);
             res.setHeader("content-type", "application/json");
             res.json({
               message: "You are not authorized to see this user's info",
             });
           }
-        } else {
-          res.status(401);
-          res.setHeader("content-type", "application/json");
-          res.json({
-            message: "You are not authorized to see this user's info",
-          });
-        }
       } else {
         err = new Error("user doesn't exists");
         err.statusCode = 404;
@@ -488,7 +488,7 @@ exports.assignUsertoDepartment = (req, res, next) => {
                 res.status(200);
                 res.setHeader("content-type", "application/json");
                 res.json({
-                  message: "assigned user to department successfully",
+                  message: "assigned user to department successfully",user
                 });
               })
               .catch((err) => next(err));

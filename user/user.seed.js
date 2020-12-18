@@ -24,6 +24,7 @@ function genUsers(depIDS, userIds) {
       gender: faker.random.number({ min: 1, max: 3 }),
       hash: data.hash,
       salt: data.salt,
+      position: faker.name.jobTitle(),
     };
     users.push(user);
   }
