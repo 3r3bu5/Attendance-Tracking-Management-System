@@ -9,8 +9,8 @@ const Attendance = require("../attendance/attendance.model");
 const Department = require("../department/department.model");
 const { v4: uuidv4 } = require("uuid");
 
-const NumberOfDepartment = 5;
-const NumberOfUsers = 10;
+const NumberOfDepartment = config.numberOfDummyDepartment;
+const NumberOfUsers = config.numberOfDummyUsers;
 
 function getuuids(x) {
   idsArry = [];

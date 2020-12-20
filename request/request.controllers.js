@@ -288,7 +288,6 @@ exports.acceptRequest = (req, res, next) => {
                     (currentDate.getTime() - lastAttendanceEntryTimestamp) /
                     1000;
                   empWorkedHours /= 60 * 60;
-                  console.log(empWorkedHours, currentDate);
                   request.status = 2;
                   request
                     .save()
@@ -342,8 +341,6 @@ exports.refuseRequest = (req, res, next) => {
   Request.findById(req.params.reqId)
     .then((request) => {
       if (request != null) {
-        console.log(req.user.headOfDepartmentId, request.departmentId);
-
         if (
           req.user.isAdmin == true ||
           (req.user.headOfDepartmentId &&

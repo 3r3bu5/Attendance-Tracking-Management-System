@@ -14,7 +14,6 @@ function departmentValidation(req, res, next) {
   // Schema for creating new department endpoint
   // nameOfController : createOne
   else if (req.method === "POST") {
-
     schema = Joi.object({
       name: Joi.string().min(6).max(30).required(),
       abbr: Joi.string().min(2).max(9).required(),

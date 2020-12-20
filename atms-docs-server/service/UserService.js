@@ -1,27 +1,25 @@
-'use strict';
-
+"use strict";
 
 /**
  * Assign user to a department.
  * * Assign user to a department. * Access: This operation can only performed by Admin
  *
  * body Object department is the id of the department to be assigned to. (optional)
- * userId String 
+ * userId String
  * origin String CORS
  * returns Object
  **/
-exports.assignUserToADepartment = function(body,userId,origin) {
-  return new Promise(function(resolve, reject) {
+exports.assignUserToADepartment = function (body, userId, origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * CheckIn endpoint.
@@ -30,18 +28,17 @@ exports.assignUserToADepartment = function(body,userId,origin) {
  * origin String CORS
  * returns Object
  **/
-exports.checkInUser = function(origin) {
-  return new Promise(function(resolve, reject) {
+exports.checkInUser = function (origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Checkout endpoint
@@ -50,39 +47,37 @@ exports.checkInUser = function(origin) {
  * origin String CORS
  * returns Object
  **/
-exports.checkOutUser = function(origin) {
-  return new Promise(function(resolve, reject) {
+exports.checkOutUser = function (origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Create default admin endpoint.
- * * This endpoint is simply to register a new admin user if there is no admin to the system * The admin default information can be found and edited in the config.js file 
+ * * This endpoint is simply to register a new admin user if there is no admin to the system * The admin default information can be found and edited in the config.js file
  *
- * userId String 
+ * userId String
  * origin String CORS
  * returns Object
  **/
-exports.createDefaultAdmin = function(userId,origin) {
-  return new Promise(function(resolve, reject) {
+exports.createDefaultAdmin = function (userId, origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * [DANGER] Delete all users
@@ -91,39 +86,37 @@ exports.createDefaultAdmin = function(userId,origin) {
  * origin String CORS
  * returns Object
  **/
-exports.deleteUsers = function(origin) {
-  return new Promise(function(resolve, reject) {
+exports.deleteUsers = function (origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Delete a specific user info
  * Delete a specific user info. Access: This operation can only performed by Admin.
  *
- * userId String 
+ * userId String
  * origin String CORS
  * returns Object
  **/
-exports.deleteUsersUserId = function(userId,origin) {
-  return new Promise(function(resolve, reject) {
+exports.deleteUsersUserId = function (userId, origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * List All users information.
@@ -132,12 +125,11 @@ exports.deleteUsersUserId = function(userId,origin) {
  * origin String CORS
  * no response value expected for this operation
  **/
-exports.getAllUsers = function(origin) {
-  return new Promise(function(resolve, reject) {
+exports.getAllUsers = function (origin) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
-}
-
+};
 
 /**
  * Get the current avaliable users.
@@ -146,39 +138,37 @@ exports.getAllUsers = function(origin) {
  * origin String CORS
  * returns Object
  **/
-exports.getAvaliableUsers = function(origin) {
-  return new Promise(function(resolve, reject) {
+exports.getAvaliableUsers = function (origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Retrive a specific user info
  * * Retrive a specific user info  * Access: This operation can only performed by Admin
  *
- * userId String 
+ * userId String
  * origin String CORS
  * returns Object
  **/
-exports.getUsersUserId = function(userId,origin) {
-  return new Promise(function(resolve, reject) {
+exports.getUsersUserId = function (userId, origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * List all departments heads
@@ -187,81 +177,77 @@ exports.getUsersUserId = function(userId,origin) {
  * origin String CORS (optional)
  * returns Object
  **/
-exports.listAllDepartmentsHeads = function(origin) {
-  return new Promise(function(resolve, reject) {
+exports.listAllDepartmentsHeads = function (origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Login endpoint.
  * * Login endpoint. * Access: This operation can only performed by Admin
  *
  * body Object  (optional)
- * userId String 
+ * userId String
  * origin String CORS
  * returns Object
  **/
-exports.loginUser = function(body,userId,origin) {
-  return new Promise(function(resolve, reject) {
+exports.loginUser = function (body, userId, origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Register a new user.
  * * Register an employee. * Access: This operation can only performed by Admin
  *
  * body Object Request body will contain all the new user's information. (optional)
- * userId String 
+ * userId String
  * origin String CORS
  * returns Object
  **/
-exports.postUsersUserIdRegister = function(body,userId,origin) {
-  return new Promise(function(resolve, reject) {
+exports.postUsersUserIdRegister = function (body, userId, origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Edit  a specific user info
  * * Edit a specific user info  * Access: This operation can only performed by:   * Admin => can change any of the user's information.   * user itself => can only change his image,age,gender
  *
  * body Object  (optional)
- * userId String 
+ * userId String
  * origin String CORS
  * returns Object
  **/
-exports.putUsersUserId = function(body,userId,origin) {
-  return new Promise(function(resolve, reject) {
+exports.putUsersUserId = function (body, userId, origin) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/json'] = { };
+    examples["application/json"] = {};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};

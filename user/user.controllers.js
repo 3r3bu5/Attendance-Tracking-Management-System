@@ -116,7 +116,6 @@ The admin default information can be found and edited in the config.js file
 exports.createDefaultAdmin = (req, res, next) => {
   User.findOne({ isAdmin: true })
     .then((user) => {
-      console.log(user);
       if (user != null) {
         res.status(406);
         res.setHeader("Content-Type", "application/json");
@@ -289,7 +288,6 @@ exports.userCheckIn = (req, res, next) => {
               res.json({ message: "You are already signed in for today" });
             }
           } else {
-            console.log(currentHour == startinghour);
             if (
               currentHour == startinghour &&
               currentMinutes <= allowanceminutes
@@ -364,7 +362,6 @@ exports.userCheckOut = (req, res, next) => {
               empWorkedHours =
                 (currentDate.getTime() - lastAttendanceEntryTimestamp) / 1000;
               empWorkedHours /= 60 * 60;
-              console.log(empWorkedHours);
 
               if (empWorkedHours >= workHours) {
                 // check if employee has completed the specified workhours
@@ -439,30 +436,28 @@ exports.getOne = (req, res, next) => {
     })
     .then((user) => {
       if (user != null) {
-
-        if (req.user.isAdmin == true ){
+        if (req.user.isAdmin == true) {
           res.status(200);
           res.setHeader("content-type", "application/json");
           res.json(user);
-
-        } else if  (user.department != null && req.user._id == user.department.depHead._id ) {
+        } else if (
+          user.department != null &&
+          req.user._id == user.department.depHead._id
+        ) {
           res.status(200);
           res.setHeader("content-type", "application/json");
           res.json(user);
+        } else if (req.user._id == user._id) {
+          res.status(200);
+          res.setHeader("content-type", "application/json");
+          res.json(user);
+        } else {
+          res.status(401);
+          res.setHeader("content-type", "application/json");
+          res.json({
+            message: "You are not authorized to see this user's info",
+          });
         }
-
-        else if (req.user._id == user._id ) {
-          res.status(200);
-          res.setHeader("content-type", "application/json");
-          res.json(user);
-        }
-        else {
-            res.status(401);
-            res.setHeader("content-type", "application/json");
-            res.json({
-              message: "You are not authorized to see this user's info",
-            });
-          }
       } else {
         err = new Error("user doesn't exists");
         err.statusCode = 404;
@@ -484,11 +479,11 @@ exports.assignUsertoDepartment = (req, res, next) => {
             user
               .save()
               .then((user) => {
-                console.log(user);
                 res.status(200);
                 res.setHeader("content-type", "application/json");
                 res.json({
-                  message: "assigned user to department successfully",user
+                  message: "assigned user to department successfully",
+                  user,
                 });
               })
               .catch((err) => next(err));

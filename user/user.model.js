@@ -45,7 +45,7 @@ const UserSchema = new mongoose.Schema(
     },
     avaliable: {
       type: Boolean,
-      default:false
+      default: false,
     },
     absenceDays: {
       type: Number,

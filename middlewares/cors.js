@@ -1,6 +1,7 @@
 var cors = require("cors");
+const config = require("../config.js");
 
-var allowedOrigins = ["http://localhost:3000", "https://localhost:9000"];
+var allowedOrigins = config.origins;
 
 var corsOptionsDelegate = (req, callback) => {
   var corsOptions;

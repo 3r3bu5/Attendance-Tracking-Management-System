@@ -69,7 +69,6 @@ exports.getOne = (req, res, next) => {
     .populate("depHead", "_id name email avaliable")
     .then((department) => {
       if (department != null) {
-        console.log(req.user._id, department.depHead);
         if (
           (department.depHead != null &&
             req.user._id == department.depHead._id) ||
@@ -155,12 +154,12 @@ exports.assignHeadOfDepartment = (req, res, next) => {
                 user
                   .save()
                   .then((user) => {
-                    console.log(user);
                     res.status(200);
                     res.setHeader("content-type", "application/json");
                     res.json({
                       message:
-                        "Department's head assigned successfully successfully",department
+                        "Department's head assigned successfully successfully",
+                      department,
                     });
                   })
                   .catch((err) => next(err));

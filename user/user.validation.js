@@ -2,7 +2,6 @@ const Joi = require("joi");
 
 function userValidation(req, res, next) {
   var schema;
-  console.log(req.route.path);
   // Schema for register new user  endpoint
   // nameOfController : registerNewUser
 
